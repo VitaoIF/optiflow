@@ -10,7 +10,10 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
     show-sql: true
 
   flyway:
-    enabled: true
+    enabled: false
+    baseline-on-migrate: true
