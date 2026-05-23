@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "client")
@@ -29,6 +31,9 @@ public class Client {
     private String cpf;
 
     private String address;
+
+    @OneToMany(mappedBy = "client" , cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Prescription> prescriptions = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at")
