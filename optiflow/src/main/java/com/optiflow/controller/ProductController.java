@@ -2,7 +2,6 @@ package com.optiflow.controller;
 
 import com.optiflow.dto.request.ProductRequest;
 import com.optiflow.dto.response.ProductResponse;
-import com.optiflow.entities.Product;
 import com.optiflow.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
