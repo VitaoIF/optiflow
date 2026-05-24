@@ -35,6 +35,9 @@ public class Client {
     @OneToMany(mappedBy = "client" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Prescription> prescriptions = new ArrayList<>();
 
+    @OneToMany(mappedBy = "client")
+    private List<Sale> sales = new ArrayList<>();
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDate createdAt;
