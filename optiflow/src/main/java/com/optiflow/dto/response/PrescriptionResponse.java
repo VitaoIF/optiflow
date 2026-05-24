@@ -9,6 +9,8 @@ import java.time.LocalDate;
 public record PrescriptionResponse(
         Long id,
         Long clientId,
+        String clientName,
+        String clientCPF,
         BigDecimal odSphere,
         BigDecimal osSphere,
         BigDecimal odCylinder,
