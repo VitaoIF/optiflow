@@ -7,6 +7,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -33,6 +35,9 @@ public class Product {
     private Integer stockQuantity;
 
     private Boolean active;
+
+    @OneToMany(mappedBy = "product")
+    private List<SaleItem> saleItems = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at")
