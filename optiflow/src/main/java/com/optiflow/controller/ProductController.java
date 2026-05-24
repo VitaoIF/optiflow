@@ -38,19 +38,19 @@ public class ProductController {
         return ResponseEntity.ok().body(productResponse);
     }
 
-    @GetMapping(value = "{/id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<ProductResponse> findById(@PathVariable Long id){
         ProductResponse productResponse = productService.findById(id);
         return ResponseEntity.ok().body(productResponse);
     }
 
-    @DeleteMapping(value = "{/id}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "{/id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<ProductResponse> update(@PathVariable Long id, @RequestBody ProductRequest request){
         ProductResponse productResponse = productService.update(id, request);
         return ResponseEntity.ok().body(productResponse);
