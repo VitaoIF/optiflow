@@ -7,6 +7,9 @@ import com.optiflow.entities.Client;
 import com.optiflow.entities.Product;
 import com.optiflow.entities.Sale;
 import com.optiflow.entities.SaleItem;
+import com.optiflow.exceptions.custom.ClientNotFoundException;
+import com.optiflow.exceptions.custom.ProductNotFoundException;
+import com.optiflow.exceptions.custom.SaleNotFoundException;
 import com.optiflow.mapper.SaleItemMapper;
 import com.optiflow.mapper.SaleMapper;
 import com.optiflow.repository.ClientRepository;
@@ -37,13 +40,13 @@ public class SaleService {
     public SaleResponse create(SaleRequest request){
 
         Client client = clientRepository.findById(request.clientId())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+                .orElseThrow(() -> new ClientNotFoundException("Cliente não encontrado"));
 
         List<SaleItem> items = new ArrayList<>();
 
         for (SaleItemRequest saleItemRequest: request.items()){
             Product product = productRepository.findById(saleItemRequest.productId())
-                    .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                    .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
 
             SaleItem saleItem = SaleItemMapper.toEntity(saleItemRequest, product);
 
@@ -74,7 +77,7 @@ public class SaleService {
 
     @Transactional
     public SaleResponse findById(Long id){
-        Sale sale = saleRepository.findById(id).orElseThrow(() -> new RuntimeException("Venda não encontrada "));
+        Sale sale = saleRepository.findById(id).orElseThrow(() -> new SaleNotFoundException("Venda não encontrada "));
         return SaleMapper.toSaleResponse(sale);
     }
 
