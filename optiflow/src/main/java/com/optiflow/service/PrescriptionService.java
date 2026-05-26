@@ -4,6 +4,7 @@ import com.optiflow.dto.request.PrescriptionRequest;
 import com.optiflow.dto.response.PrescriptionResponse;
 import com.optiflow.entities.Client;
 import com.optiflow.entities.Prescription;
+import com.optiflow.exceptions.custom.PrescriptionNotFoundException;
 import com.optiflow.mapper.PrescriptionMapper;
 import com.optiflow.repository.ClientRepository;
 import com.optiflow.repository.PrescriptionRepository;
@@ -33,7 +34,7 @@ public class PrescriptionService {
 
     public PrescriptionResponse findById(Long id){
         Prescription prescription = prescriptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Prescrição não encontrada"));
+                .orElseThrow(() -> new PrescriptionNotFoundException("Prescrição não encontrada"));
         return PrescriptionMapper.toPrescriptionResponse(prescription);
     }
 
