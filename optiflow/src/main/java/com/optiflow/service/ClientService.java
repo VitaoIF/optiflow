@@ -3,6 +3,7 @@ package com.optiflow.service;
 import com.optiflow.dto.request.ClientRequest;
 import com.optiflow.dto.response.ClientResponse;
 import com.optiflow.entities.Client;
+import com.optiflow.exceptions.custom.ClientNotFoundException;
 import com.optiflow.mapper.ClientMapper;
 import com.optiflow.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class ClientService {
     }
 
     public ClientResponse findById(Long id){
-        Client client = repository.findById(id).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+        Client client = repository.findById(id).orElseThrow(() -> new ClientNotFoundException("Cliente não encontrado"));
         return ClientMapper.toClientResponse(client);
     }
 
