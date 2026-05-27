@@ -7,10 +7,8 @@ import com.optiflow.entities.Client;
 import com.optiflow.entities.Product;
 import com.optiflow.entities.Sale;
 import com.optiflow.entities.SaleItem;
-import com.optiflow.exceptions.custom.ClientNotFoundException;
-import com.optiflow.exceptions.custom.InsufficientStockException;
-import com.optiflow.exceptions.custom.ProductNotFoundException;
-import com.optiflow.exceptions.custom.SaleNotFoundException;
+import com.optiflow.entities.enums.SaleStatus;
+import com.optiflow.exceptions.custom.*;
 import com.optiflow.mapper.SaleItemMapper;
 import com.optiflow.mapper.SaleMapper;
 import com.optiflow.repository.ClientRepository;
@@ -54,6 +52,43 @@ public class SaleService {
         return SaleMapper.toSaleResponse(savedSale);
     }
 
+    public SaleResponse cancelSale(Long saleId){
+        Sale sale = findSaleById(saleId);
+
+        validateSaleCancell(sale);
+
+        restoreStock(sale);
+
+        sale.setSaleStatus(SaleStatus.CANCELED);
+
+        Sale savedSale = saleRepository.save(sale);
+
+        return SaleMapper.toSaleResponse(savedSale);
+    }
+
+    private void restoreStock(Sale sale) {
+
+        for(SaleItem item : sale.getSaleItems()) {
+
+            Product product = item.getProduct();
+
+            product.setStockQuantity(
+                    product.getStockQuantity() + item.getQuantity()
+            );
+        }
+    }
+
+    private Sale findSaleById(Long saleId){
+        return saleRepository.findById(saleId)
+                .orElseThrow(() -> new SaleNotFoundException("Venda não encontrada"));
+    }
+
+    private void validateSaleCancell(Sale sale){
+        if(sale.getSaleStatus() == SaleStatus.CANCELED){
+            throw new InvalidSaleException("Venda já cancelada");
+        }
+    }
+
     private Client findClientById(Long clientId){
         return clientRepository.findById(clientId)
                 .orElseThrow(() -> new ClientNotFoundException("Cliente não encontrado"));
@@ -67,7 +102,7 @@ public class SaleService {
                     .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado "));
 
             validateStock(product, request.quantity());
-            validateStock(product, request.quantity());
+            decreaseStock(product, request.quantity());
 
             SaleItem item = SaleItemMapper.toEntity(request, product);
             saleItems.add(item);
@@ -105,6 +140,7 @@ public class SaleService {
             item.setSale(sale);
         }
     }
+
 
     @Transactional
     public Page<SaleResponse> findAll(Pageable pageable){
