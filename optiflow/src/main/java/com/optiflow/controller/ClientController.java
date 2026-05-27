@@ -3,6 +3,7 @@ package com.optiflow.controller;
 import com.optiflow.dto.request.ClientRequest;
 import com.optiflow.dto.response.ClientResponse;
 import com.optiflow.service.ClientService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public class ClientController {
     private ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<ClientResponse> insert(@RequestBody ClientRequest clientRequest){
+    public ResponseEntity<ClientResponse> insert(@Valid @RequestBody ClientRequest clientRequest){
         ClientResponse clientResponse = clientService.insert(clientRequest);
 
         URI uri = ServletUriComponentsBuilder
@@ -51,7 +52,7 @@ public class ClientController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ClientResponse> updated(@PathVariable Long id,@RequestBody ClientRequest request){
+    public ResponseEntity<ClientResponse> updated(@PathVariable Long id,@Valid @RequestBody ClientRequest request){
         ClientResponse response = clientService.update(id, request);
         return ResponseEntity.ok().body(response);
     }
