@@ -3,6 +3,7 @@ package com.optiflow.controller;
 import com.optiflow.dto.request.ProductRequest;
 import com.optiflow.dto.response.ProductResponse;
 import com.optiflow.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public class ProductController {
     private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<ProductResponse> insert(@RequestBody ProductRequest request){
+    public ResponseEntity<ProductResponse> insert(@Valid @RequestBody ProductRequest request){
         ProductResponse response = productService.insert(request);
 
         URI uri = ServletUriComponentsBuilder
@@ -51,7 +52,7 @@ public class ProductController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ProductResponse> update(@PathVariable Long id, @RequestBody ProductRequest request){
+    public ResponseEntity<ProductResponse> update(@PathVariable Long id, @Valid @RequestBody ProductRequest request){
         ProductResponse productResponse = productService.update(id, request);
         return ResponseEntity.ok().body(productResponse);
     }
