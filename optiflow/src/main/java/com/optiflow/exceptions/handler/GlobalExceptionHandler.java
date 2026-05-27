@@ -1,11 +1,9 @@
 package com.optiflow.exceptions.handler;
 
-import com.optiflow.exceptions.custom.ClientNotFoundException;
-import com.optiflow.exceptions.custom.PrescriptionNotFoundException;
-import com.optiflow.exceptions.custom.ProductNotFoundException;
-import com.optiflow.exceptions.custom.SaleNotFoundException;
+import com.optiflow.exceptions.custom.*;
 import com.optiflow.exceptions.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -56,6 +54,39 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(404).body(errorResponse);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
+
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .findFirst()
+                .orElse("Validation error");
+
+        return ResponseEntity.status(400)
+                .body(new ErrorResponse(
+                        400,
+                        message,
+                        LocalDateTime.now()
+                ));
+    }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ErrorResponse> handleStock(
+            InsufficientStockException ex
+    ){
+
+        return ResponseEntity.status(400)
+                .body(
+                        new ErrorResponse(
+                                400,
+                                ex.getMessage(),
+                                LocalDateTime.now()
+                        )
+                );
     }
 
     @ExceptionHandler(Exception.class)
