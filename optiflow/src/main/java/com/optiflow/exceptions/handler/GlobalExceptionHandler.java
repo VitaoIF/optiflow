@@ -89,6 +89,12 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(InvalidSaleException.class)
+    public ResponseEntity<ErrorResponse> handleCancellingSale(InvalidSaleException ex){
+        ErrorResponse errorResponse = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(400).body(errorResponse);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
 
