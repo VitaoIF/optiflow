@@ -50,4 +50,10 @@ public class SaleController {
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/{id}/cancel")
+    public ResponseEntity<SaleResponse> cancel( @PathVariable Long id){
+        SaleResponse saleResponse = service.cancelSale(id);
+        return ResponseEntity.ok().body(saleResponse);
+    }
+
 }
