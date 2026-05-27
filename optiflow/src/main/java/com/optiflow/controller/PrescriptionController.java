@@ -3,6 +3,7 @@ package com.optiflow.controller;
 import com.optiflow.dto.request.PrescriptionRequest;
 import com.optiflow.dto.response.PrescriptionResponse;
 import com.optiflow.service.PrescriptionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public class PrescriptionController {
     private PrescriptionService prescriptionService;
 
     @PostMapping
-    public ResponseEntity<PrescriptionResponse> insert(@RequestBody PrescriptionRequest request){
+    public ResponseEntity<PrescriptionResponse> insert(@Valid @RequestBody PrescriptionRequest request){
         PrescriptionResponse prescriptionResponse = prescriptionService.insert(request);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -50,7 +51,7 @@ public class PrescriptionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PrescriptionResponse> update(@PathVariable Long id, @RequestBody PrescriptionRequest request){
+    public ResponseEntity<PrescriptionResponse> update(@PathVariable Long id, @Valid @RequestBody PrescriptionRequest request){
         PrescriptionResponse prescriptionResponse = prescriptionService.update(id, request);
         return ResponseEntity.ok().body(prescriptionResponse);
     }
