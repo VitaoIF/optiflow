@@ -8,6 +8,7 @@ import com.optiflow.entities.Product;
 import com.optiflow.entities.Sale;
 import com.optiflow.entities.SaleItem;
 import com.optiflow.exceptions.custom.ClientNotFoundException;
+import com.optiflow.exceptions.custom.InsufficientStockException;
 import com.optiflow.exceptions.custom.ProductNotFoundException;
 import com.optiflow.exceptions.custom.SaleNotFoundException;
 import com.optiflow.mapper.SaleItemMapper;
@@ -39,34 +40,70 @@ public class SaleService {
     @Transactional
     public SaleResponse create(SaleRequest request){
 
-        Client client = clientRepository.findById(request.clientId())
-                .orElseThrow(() -> new ClientNotFoundException("Cliente não encontrado"));
+        Client client = findClientById(request.clientId());
 
-        List<SaleItem> items = new ArrayList<>();
+        List<SaleItem> items = createSaleItems(request.items());
 
-        for (SaleItemRequest saleItemRequest: request.items()){
-            Product product = productRepository.findById(saleItemRequest.productId())
-                    .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
-
-            SaleItem saleItem = SaleItemMapper.toEntity(saleItemRequest, product);
-
-            items.add(saleItem);
-        }
-
-        Double totalPrice = items.stream()
-                .mapToDouble(
-                        item ->
-                                item.getQuantity() * item.getUnitPrice())
-                .sum();
+        Double totalPrice = calculateTotalPrice(items);
         Sale sale = SaleMapper.toEntity(request, items, client, totalPrice);
 
-        for(SaleItem item : items){
-            item.setSale(sale);
-        }
+        associateItemsWithSale(items, sale);
 
         Sale savedSale = saleRepository.save(sale);
 
         return SaleMapper.toSaleResponse(savedSale);
+    }
+
+    private Client findClientById(Long clientId){
+        return clientRepository.findById(clientId)
+                .orElseThrow(() -> new ClientNotFoundException("Cliente não encontrado"));
+    }
+
+    private List<SaleItem> createSaleItems(List<SaleItemRequest> itemRequest){
+        List<SaleItem> saleItems = new ArrayList<>();
+
+        for(SaleItemRequest request: itemRequest){
+            Product product = productRepository.findById(request.productId())
+                    .orElseThrow(() -> new ProductNotFoundException("Produto não encontrado "));
+
+            validateStock(product, request.quantity());
+            validateStock(product, request.quantity());
+
+            SaleItem item = SaleItemMapper.toEntity(request, product);
+            saleItems.add(item);
+
+        }
+        return saleItems;
+    }
+
+    private void validateStock(Product product, Integer quantity){
+
+        if(product.getStockQuantity() < quantity){
+
+            throw new InsufficientStockException(
+                    "Estoque insuficiente para o produto: "
+                            + product.getName()
+            );
+        }
+    }
+
+    private void decreaseStock(Product product, Integer quantity){
+        product.setStockQuantity(product.getStockQuantity() - quantity);
+    }
+
+    private Double calculateTotalPrice(List<SaleItem> saleItems){
+        return saleItems.stream()
+                .mapToDouble(item ->
+                        item.getQuantity()
+                                * item.getUnitPrice()
+                )
+                .sum();
+    }
+
+    private void associateItemsWithSale(List<SaleItem> items, Sale sale){
+        for(SaleItem item : items){
+            item.setSale(sale);
+        }
     }
 
     @Transactional
