@@ -3,6 +3,7 @@ package com.optiflow.service;
 import com.optiflow.dto.request.ProductRequest;
 import com.optiflow.dto.response.ProductResponse;
 import com.optiflow.entities.Product;
+import com.optiflow.entities.enums.ProductType;
 import com.optiflow.exceptions.custom.PrescriptionNotFoundException;
 import com.optiflow.mapper.ProductMapper;
 import com.optiflow.repository.ProductRepository;
@@ -25,8 +26,8 @@ public class ProductService {
         return ProductMapper.toProductResponse(saved);
     }
 
-    public Page<ProductResponse> findAll(Pageable pageable){
-        Page<Product> products = repository.findAll(pageable);
+    public Page<ProductResponse> findAll(String name, String brand, ProductType productType, Double minPrice, Double maxPrice, Boolean active, Pageable pageable){
+        Page<Product> products = repository.findAllWithFilters(name, brand, productType,minPrice, maxPrice,active, pageable);
         return products.map(ProductMapper::toProductResponse);
     }
 
