@@ -2,6 +2,7 @@ package com.optiflow.controller;
 
 import com.optiflow.dto.request.ProductRequest;
 import com.optiflow.dto.response.ProductResponse;
+import com.optiflow.entities.enums.ProductType;
 import com.optiflow.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,15 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ProductResponse>> findAll(Pageable pageable){
-        Page<ProductResponse> productResponse = productService.findAll(pageable);
+    public ResponseEntity<Page<ProductResponse>> findAll(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String brand,
+            @RequestParam(required = false) ProductType productType,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Boolean active,
+            Pageable pageable){
+        Page<ProductResponse> productResponse = productService.findAll(name, brand, productType, minPrice, maxPrice, active, pageable);
         return ResponseEntity.ok().body(productResponse);
     }
 
