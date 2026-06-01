@@ -1,8 +1,10 @@
 package com.optiflow.dto.response;
 
-import com.optiflow.entities.SaleItem;
+import com.optiflow.entities.enums.PaymentMethod;
+import com.optiflow.entities.enums.SaleStatus;
 import lombok.Builder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Builder
@@ -13,6 +15,9 @@ public record SaleResponse(
         String clientCPF,
         String clientPhone,
         String clientAddress,
-        List<SaleItemResponse> items
+        SaleStatus saleStatus,
+        PaymentMethod paymentMethod,
+        List<SaleItemResponse> items,
+        LocalDate createdAt
 ) {
 }
