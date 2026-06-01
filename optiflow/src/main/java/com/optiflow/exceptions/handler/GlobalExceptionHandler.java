@@ -89,6 +89,18 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException e){
+        ErrorResponse errorResponse = new ErrorResponse(404, e.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(404).body(errorResponse);
+    }
+
+    @ExceptionHandler(EmailOrPasswordInvalidException.class)
+    public ResponseEntity<ErrorResponse> handleNotFoundException(EmailOrPasswordInvalidException ex){
+        ErrorResponse errorResponse = new ErrorResponse(404, ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(404).body(errorResponse);
+    }
+
     @ExceptionHandler(InvalidSaleException.class)
     public ResponseEntity<ErrorResponse> handleCancellingSale(InvalidSaleException ex){
         ErrorResponse errorResponse = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
