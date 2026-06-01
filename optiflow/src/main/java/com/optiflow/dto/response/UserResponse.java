@@ -4,7 +4,8 @@ import com.optiflow.entities.enums.UserRole;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Builder
-public record UserResponse(Long id, String name, String email, UserRole userRole, LocalDate createdAt) {
+public record UserResponse(UUID id, String name, String email, UserRole userRole, LocalDate createdAt) {
 }
