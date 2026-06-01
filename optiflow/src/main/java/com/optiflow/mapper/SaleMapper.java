@@ -31,6 +31,9 @@ public class SaleMapper {
             .clientCPF(sale.getClient().getCpf())
             .clientAddress(sale.getClient().getAddress())
             .clientPhone(sale.getClient().getPhone())
+            .saleStatus(sale.getSaleStatus())
+            .paymentMethod(sale.getPaymentMethod())
+            .createdAt(sale.getCreatedAt())
 
             .items(
                     sale.getSaleItems()
