@@ -101,6 +101,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(errorResponse);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex){
+        ErrorResponse errorResponse = new ErrorResponse(404, ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(404).body(errorResponse);
+    }
+
     @ExceptionHandler(InvalidSaleException.class)
     public ResponseEntity<ErrorResponse> handleCancellingSale(InvalidSaleException ex){
         ErrorResponse errorResponse = new ErrorResponse(400, ex.getMessage(), LocalDateTime.now());
