@@ -7,6 +7,8 @@ import com.optiflow.exceptions.custom.EmailAlreadyExistsException;
 import com.optiflow.mapper.UserMapper;
 import com.optiflow.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,5 +31,19 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         User saved = userRepository.save(user);
         return UserMapper.toUserResponse(saved);
+    }
+
+    public Page<UserResponse> findAll(Pageable pageable){
+        Page<User> users = userRepository.findAll(pageable);
+        return users.map(UserMapper::toUserResponse);
+    }
+
+    public UserResponse findById(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+        return UserMapper.toUserResponse(user);
+    }
+
+    public void delete(Long id){
+        userRepository.deleteById(id);
     }
 }
