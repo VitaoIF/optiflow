@@ -4,6 +4,7 @@ import com.optiflow.dto.request.ProductRequest;
 import com.optiflow.dto.response.ProductResponse;
 import com.optiflow.entities.Product;
 import com.optiflow.entities.enums.ProductType;
+import com.optiflow.exceptions.custom.ProductNotFoundException;
 import com.optiflow.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,6 +81,18 @@ class ProductServiceTest {
 
         ProductResponse productResponse = productService.findById(1L);
         assertEquals("Óculos", productResponse.name());
+    }
+
+    @Test
+    @DisplayName("Should return exception when product id not found")
+    void shouldReturnExceptionWhenIdNotExists(){
+        when(productRepository.findById(2L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                ProductNotFoundException.class,
+                () -> productService.findById(2L)
+        );
     }
 
 
