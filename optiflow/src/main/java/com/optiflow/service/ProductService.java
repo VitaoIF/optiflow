@@ -4,7 +4,7 @@ import com.optiflow.dto.request.ProductRequest;
 import com.optiflow.dto.response.ProductResponse;
 import com.optiflow.entities.Product;
 import com.optiflow.entities.enums.ProductType;
-import com.optiflow.exceptions.custom.PrescriptionNotFoundException;
+import com.optiflow.exceptions.custom.ProductNotFoundException;
 import com.optiflow.mapper.ProductMapper;
 import com.optiflow.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class ProductService {
     }
 
     public ProductResponse findById(Long id){
-        Product product = repository.findById(id).orElseThrow(() -> new PrescriptionNotFoundException("Produto não encontrado"));
+        Product product = repository.findById(id).orElseThrow(() -> new ProductNotFoundException("Produto não encontrado"));
         return ProductMapper.toProductResponse(product);
     }
 
